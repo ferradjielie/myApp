@@ -1,115 +1,103 @@
-import {
-    StyleSheet,
-    Appearance,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    FlatList,
-    View,
-    Text,
-    Image,
-  } from "react-native";
-  
-  import { Colors } from "@/constants/Colors"; // 🎨 Thèmes clairs/sombres
-  import { MENU_ITEMS } from "@/constants/MenuItems"; // 📋 Données à afficher
-  import MENU_IMAGES from "@/constants/MenuImages"; // 🖼️ Images associées à chaque item
-  
-  function MenuScreen() {
-    // 📱 Détection du mode clair ou sombre automatiquement
-    const colorScheme = Appearance.getColorScheme();
-  
-    // 🎨 Application du thème en fonction du mode détecté
-    const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
-  
-    // 🧵 Génération dynamique du style avec les bonnes couleurs
-    const styles = createStyles(theme);
-  
-    // 💡 Container = SafeAreaView sur mobile ou ScrollView sur web
-    const Container = Platform.OS === "web" ? ScrollView : SafeAreaView;
-  
+import { StyleSheet, Appearance, Platform, SafeAreaView, ScrollView, FlatList, View, Text, Image } from "react-native";
+
+import { Colors } from '@/constants/Colors';
+import { MENU_ITEMS } from '@/constants/MenuItems';
+import MENU_IMAGES from '@/constants/MenuImages';
+
+export default function MenuScreen() {
+    const colorScheme = Appearance.getColorScheme()
+
+    const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+    const styles = createStyles(theme, colorScheme)
+
+    const Container = Platform.OS === 'web' ? ScrollView : SafeAreaView;
+
+    const separatorComp = <View style={styles.separator} />
+
+    //const headerComp = <Text>Top of List</Text>
+    const footerComp = <Text style={{ color: theme.text }}>End of Menu</Text>
+
     return (
-      <Container style={styles.container}>
-        <FlatList
-          // ✅ Liste de données à afficher (doit être un tableau d'objets)
-          data={MENU_ITEMS}
-  
-          // 🔑 Fonction qui retourne une "clé" unique pour chaque élément (obligatoire pour FlatList)
-          keyExtractor={(item) => item.id.toString()}
-  
-          // 🧱 Ajoute un peu d'espace autour de la liste
-          contentContainerStyle={styles.list}
-  
-          // 🔁 Fonction qui détermine comment chaque item doit s'afficher
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Image
-                // 🖼️ Image de l'item, récupérée depuis un tableau d’images
-                source={MENU_IMAGES[item.id - 1]}
-                style={styles.image}
-                resizeMode="cover"
-              />
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-              </View>
-            </View>
-          )}
-        />
-      </Container>
-    );
-  }
-  
-  // 🧵 Styles dynamiques générés selon le thème
-  function createStyles(theme) {
+        <Container>
+
+            <FlatList
+                data={MENU_ITEMS}
+                keyExtractor={(item) => item.id.toString()}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.contentContainer}
+                ItemSeparatorComponent={separatorComp}
+                //ListHeaderComponent={headerComp}
+                ListFooterComponent={footerComp}
+                ListFooterComponentStyle={styles.footerComp}
+                ListEmptyComponent={<Text>No items</Text>}
+                renderItem={({ item }) => (
+                    <View style={styles.row}>
+                        <View style={styles.menuTextRow}>
+                            <Text style={[styles.menuItemTitle, styles.menuItemText]}>{item.title}</Text>
+                            <Text style={styles.menuItemText}>{item.description}</Text>
+                        </View>
+                        <Image
+                            source={MENU_IMAGES[item.id - 1]}
+                            style={styles.menuImage}
+                        />
+                    </View>
+                )}
+            />
+
+        </Container>
+    )
+}
+
+function createStyles(theme, colorScheme) {
     return StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: theme.background,
-      },
-      list: {
-        padding: 16,
-      },
-      card: {
-        marginBottom: 20,
-        backgroundColor: theme.card || "#fff",
-        borderRadius: 12,
-        overflow: "hidden",
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 3, // ✅ Ombre sur Android
-      },
-      image: {
-        width: "100%",
-        height: 180,
-      },
-      textContainer: {
-        padding: 12,
-      },
-      title: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: theme.text,
-      },
-      description: {
-        marginTop: 4,
-        color: theme.text,
-      },
-    });
-  }
-  
-  export default MenuScreen;
-  
-  // 📌 SafeAreaView
-// -> Assure que le contenu ne passe pas sous les bords "dangereux" de l'écran 
-//    (comme l'encoche sur iPhone, la barre de statut, etc.)
-// -> Très utile sur mobile pour éviter que le haut du contenu soit masqué
-
-// 📌 ScrollView
-// -> Permet de scroller quand le contenu dépasse la taille de l'écran
-// -> Pratique pour de petites listes ou des contenus non répétitifs
-// ⚠️ Attention : ScrollView charge *tout* en mémoire (moins performant que FlatList)
-
-// 🧠 Dans ce code :
-// - Sur mobile on utilise `SafeAreaView` (on a déjà FlatList pour scroller efficacement)
-// - Sur web, on utilise `ScrollView` parce que SafeAreaView est parfois inutile ou mal supporté
+        contentContainer: {
+            paddingTop: 10,
+            paddingBottom: 20,
+            paddingHorizontal: 12,
+            backgroundColor: theme.background,
+        },
+        separator: {
+            height: 1,
+            backgroundColor: colorScheme === 'dark' ? 'papayawhip' : "#000",
+            width: '50%',
+            maxWidth: 300,
+            marginHorizontal: 'auto',
+            marginBottom: 10,
+        },
+        footerComp: {
+            marginHorizontal: 'auto',
+        },
+        row: {
+            flexDirection: 'row',
+            width: '100%',
+            maxWidth: 600,
+            height: 100,
+            marginBottom: 10,
+            borderStyle: 'solid',
+            borderColor: colorScheme === 'dark' ? 'papayawhip' : '#000',
+            borderWidth: 1,
+            borderRadius: 20,
+            overflow: 'hidden',
+            marginHorizontal: 'auto',
+        },
+        menuTextRow: {
+            width: '65%',
+            paddingTop: 10,
+            paddingLeft: 10,
+            paddingRight: 5,
+            flexGrow: 1,
+        },
+        menuItemTitle: {
+            fontSize: 18,
+            textDecorationLine: 'underline',
+        },
+        menuItemText: {
+            color: theme.text,
+        },
+        menuImage: {
+            width: 100,
+            height: 100,
+        }
+    })
+}
