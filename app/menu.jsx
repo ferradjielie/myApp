@@ -101,3 +101,79 @@ function createStyles(theme, colorScheme) {
         }
     })
 }
+
+
+
+
+/* 
+═══════════════════════════════════════════════════════════════════════
+📘 RÉCAPITULATIF DES CONCEPTS UTILISÉS DANS CE FICHIER
+═══════════════════════════════════════════════════════════════════════
+
+1. 🌗 Appearance.getColorScheme()
+────────────────────────────────────
+Permet de détecter le thème système (clair ou sombre).
+Utile pour adapter les couleurs de l'application automatiquement selon
+les préférences utilisateur.
+
+→ Ex : 
+  const colorScheme = Appearance.getColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+───────────────────────────────────────────────────────────────────────
+
+2. 🎨 Thèmes dynamiques
+────────────────────────────────────
+Les styles (couleurs, arrière-plans, textes) sont adaptés en fonction du
+thème détecté via `createStyles(theme, colorScheme)`.
+
+Cela permet :
+✔ une meilleure accessibilité
+✔ un look cohérent
+✔ une app qui suit les préférences système
+
+───────────────────────────────────────────────────────────────────────
+
+3. 📦 FlatList
+────────────────────────────────────
+Composant optimisé pour afficher des listes longues avec performance.
+Contrairement à ScrollView, FlatList ne charge en mémoire que les éléments visibles.
+
+Props utilisées ici :
+- `data`: le tableau de données (MENU_ITEMS)
+- `renderItem`: rend chaque élément
+- `keyExtractor`: génère une clé unique par item
+- `ItemSeparatorComponent`: composant entre les éléments
+- `ListFooterComponent`: composant affiché en bas de la liste
+- `ListEmptyComponent`: message affiché si la liste est vide
+
+───────────────────────────────────────────────────────────────────────
+
+4. 📱 SafeAreaView & ScrollView
+────────────────────────────────────
+→ SafeAreaView est utilisé sur mobile pour éviter les zones sensibles
+(encoche, barre de statut, etc.)
+
+→ ScrollView est utilisé à la place sur le web car SafeAreaView
+n’a pas d’effet ou fonctionne mal sur navigateur.
+
+───────────────────────────────────────────────────────────────────────
+
+5. 🧵 Styles dynamiques avec StyleSheet.create()
+────────────────────────────────────
+La fonction `createStyles()` permet de générer des styles dynamiques.
+On y utilise à la fois `theme` (objets de couleur) et `colorScheme` pour
+appliquer différentes règles selon le mode clair/sombre.
+
+───────────────────────────────────────────────────────────────────────
+
+6. 🎨 Quelques props importantes utilisées
+────────────────────────────────────
+- `marginHorizontal: 'auto'` : permet de centrer horizontalement sur le web
+- `overflow: 'hidden'` : arrondit les coins sans que l’image déborde
+- `flexDirection: 'row'` : affiche les éléments horizontalement
+- `borderRadius` : arrondit les bords
+- `resizeMode: 'cover'` (dans Image) : recadre l’image pour couvrir tout le conteneur
+
+═══════════════════════════════════════════════════════════════════════
+*/
